@@ -1,0 +1,7 @@
+#!/usr/bin/env ruby
+
+require 'rubygems'
+require 'rack'
+require File.join(File.dirname(__FILE__),'..','lib','phprack')
+
+Rack::Handler::Thin.run(PHPRack.new, { :Host => "0.0.0.0", :Port => 3030 })
