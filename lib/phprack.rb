@@ -4,6 +4,8 @@ class PHPRack
     request = Rack::Request.new(env)
     response = Rack::Response.new
 
+    cwd = Dir.pwd
+
     file = env['PATH_INFO']
     file = 'index.php' if file == '' || file == '/'
     path = File.join(Dir.pwd,file)
@@ -23,12 +25,17 @@ class PHPRack
       else
         content_type = 'image/png'
       end
-      response.body << File.read(path)
-    else
-      if file =~ /css$/
-        content_type = 'text/css'
-      end
+    end
+    if file =~ /css$/
+      content_type = 'text/css'
+    end
+    
+    if file =~ /php$/
+      Dir.chdir(File.dirname(path))
       response.body << `#{cmd}`
+      Dir.chdir(cwd)
+    else
+      response.body << File.read(path)
     end
 
     response.status = status
